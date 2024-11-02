@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= book.BookName %> Details</title>
+</head>
+<body>
+    <header>
+        <h1>Book Details</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/create">Add New Book</a>
+            <a href="/about">About Us</a>
+        </nav>
+    </header>
+    <main>
+        <h2><%= book.BookName %></h2>
+        <p><strong>Author:</strong> <%= book.Author %></p>
+        <p><strong>Year:</strong> <%= book.Year %></p>
+        <p><strong>Price:</strong> $<%= book.Price %></p>
+        <p><strong>Discount:</strong> <%= book.Discount %>%</p>
+        <p><strong>Number of Pages:</strong> <%= book.NumberOfPages %></p>
+        <p><strong>Description:</strong> <%= book.Description %></p>
+        <p><strong>Fresh:</strong> <%= book.Fresh ? 'Yes' : 'No' %></p>
+
+        <h3>Edit Book</h3>
+        <form action="/books/<%= book._id %>/edit" method="POST">
+            <label for="BookName">Book Name:</label>
+            <input type="text" id="BookName" name="BookName" value="<%= book.BookName %>" required>
+
+            <label for="Author">Author:</label>
+            <input type="text" id="Author" name="Author" value="<%= book.Author %>" required>
+
+            <label for="Year">Year:</label>
+            <input type="number" id="Year" name="Year" value="<%= book.Year %>" required>
+
+            <label for="Price">Price:</label>
+            <input type="number" id="Price" name="Price" value="<%= book.Price %>" required>
+
+            <label for="Discount">Discount:</label>
+            <input type="number" id="Discount" name="Discount" value="<%= book.Discount %>">
+
+            <label for="NumberOfPages">Number of Pages:</label>
+            <input type="number" id="NumberOfPages" name="NumberOfPages" value="<%= book.NumberOfPages %>" required>
+
+            <label for="Description">Description:</label>
+            <textarea id="Description" name="Description"><%= book.Description %></textarea>
+
+            <label for="Fresh">Fresh:</label>
+            <input type="checkbox" id="Fresh" name="Fresh" value="true" <%= book.Fresh ? 'checked' : '' %>> 
+
+            <button type="submit">Update Book</button>
+        </form>
+
+        <form action="/books/<%= book._id %>/delete" method="POST" style="margin-top: 20px;">
+            <button type="submit">Delete Book</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2024 Book Collection</p>
+    </footer>
+</body>
+</html>

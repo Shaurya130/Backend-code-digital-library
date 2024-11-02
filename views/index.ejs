@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+</head>
+<body>
+    <header>
+        <h1>Book Collection</h1>
+        <nav>
+            <a href="/create">Add New Book</a>
+            <a href="/about">About Us</a>
+        </nav>
+    </header>
+    <main>
+        <h2>All Books</h2>
+        <ul>
+            <% books.forEach(book => { %> 
+                <a class="single" href="./<%= book._id %>">
+                <li>
+                    <strong><%= book.BookName %></strong> by <%= book.Author %>
+                    <p>Year: <%= book.Year %>, Price: $<%= book.Price %></p>
+                </li>
+            </a>
+            <% }) %>
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; 2024 Book Collection</p>
+    </footer>
+</body>
+</html>
