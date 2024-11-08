@@ -9,15 +9,15 @@
     <header>
         <h1>Book Collection</h1>
         <nav>
-            <a href="/create">Add New Book</a>
-            <a href="/about">About Us</a>
+            <a href="/books/create">Add New Book</a>
+            <a href="/books/about">About Us</a>
         </nav>
     </header>
     <main>
         <h2>All Books</h2>
         <ul>
             <% books.forEach(book => { %> 
-                <a class="single" href="./<%= book._id %>">
+                <a class="single" href="./books/<%= book._id %>">
                 <li>
                     <strong><%= book.BookName %></strong> by <%= book.Author %>
                     <p>Year: <%= book.Year %>, Price: $<%= book.Price %></p>

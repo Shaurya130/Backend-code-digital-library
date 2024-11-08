@@ -9,12 +9,12 @@
     <header>
         <h1>Add a New Book</h1>
         <nav>
-            <a href="/">Home</a>
-            <a href="/about">About Us</a>
+            <a href="/books">Home</a>
+            <a href="/books/about">About Us</a>
         </nav>
     </header>
     <main>
-        <form action="/create" method="POST">
+        <form action="/books/create" method="POST">
             <label for="BookName">Book Name:</label>
             <input type="text" id="BookName" name="BookName" required>
             
@@ -37,7 +37,7 @@
             <textarea id="Description" name="Description" required></textarea>
             
             <label for="Fresh">Fresh:</label>
-            <input type="checkbox" id="Fresh" name="Fresh"> 
+    <input type="checkbox" name="Fresh" value="on">
             
             <button type="submit">Add Book</button>
         </form>

@@ -1,3 +1,4 @@
+const { min } = require('lodash');
 const mongoose= require('mongoose');
 const Schema= mongoose.Schema;
 
@@ -12,11 +13,13 @@ const bookSchema= new Schema({
     },
     Year:{
         type: Number,
-        required: true
+        required: true,
+        min: 1800
     },
    Price:{
         type: Number,
-        required: true
+        required: true,
+        min:0
     },
     Discount:{
         type: Number,
@@ -24,7 +27,8 @@ const bookSchema= new Schema({
     },
     NumberOfPages:{
         type: Number,
-        required: true
+        required: true,
+        min:0
     },
     Fresh:{
         type: Boolean,
