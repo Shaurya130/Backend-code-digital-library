@@ -5,15 +5,12 @@ const asyncHandler= require("express-async-handler")
 
 //now we dont need to write try catch block async handler would automatically send the error to the handler so wrap our request in asynchandler
 
+//@desc Get all Books
+//@route GET /
 const bookIndex = asyncHandler(async(req, res) => {
-    await Book.find()
-        .then(result => {
-            res.render('index', { books: result });
-        })
-        .catch(err => {
-            console.log(err);
-            res.render('err');
-        });
+    const Boook=await Book.find({ user_id:req.user.id})
+    res.status(200).render('index', { books: result });
+    res.json(Boook);
 });
 
 const bookDetails = asyncHandler(async(req, res) => {
@@ -34,6 +31,11 @@ const bookDelete = asyncHandler(async(req, res) => {
         res.status(404).render('err');
         throw new Error("Book not found")
     }
+
+    if(bookDt.user_id.toString() !== req.user.id){
+        res.status(403);
+        throw new Error("User Dont have permission to delete other users books")
+    }
     const bookDelete= await Book.findByIdAndDelete(bookId);
     res.status(201).json({message:`Deleted book with id ${req.params.id}`})
     res.redirect('/books');
@@ -45,6 +47,11 @@ const bookEdit = asyncHandler(async(req, res) => {
     if(!bookCheck){
         res.status(404).render('err');
         throw new Error("Book not found")
+    }
+
+    if(bookCheck.user_id.toString() !== req.user.id){
+        res.status(403);
+        throw new Error("User Dont have permission to update other users books")
     }
     const updatedBook = {
         BookName: req.body.BookName,
@@ -80,8 +87,20 @@ const bookCreate = asyncHandler(async(req, res) => {
         Fresh: req.body.Fresh === 'on'  
     });
     await newBook.save()
+    const bookc= await Book.create({
+      BookName,
+      Author,
+      Year,
+      Price,
+      Discount,
+      NumberOfPages,
+      Description,
+      Fresh,
+      user_id: req.user.id  
+    })
     res.staus(201).json({newBook})
     res.redirect('/books');
+
 });
 
 module.exports = {

@@ -1,7 +1,5 @@
 const mongoose= require('mongoose');
 
-const port=process.env.PORT || 3000;
-
 //mongo
 const connectDb= async() =>{
     try{
@@ -11,7 +9,6 @@ const connectDb= async() =>{
             connect.connection.host,
             connect.connection.name
         );
-        then((result)=> app.listen(port))
     }
 catch(err){
      console.log(err)

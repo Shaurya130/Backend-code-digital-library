@@ -5,11 +5,21 @@ const bookRoutes= require('./Routes/book_routes');
 const userRoutes= require('./Routes/user_routes');
 const errorHandler= require('./middleware/errorHandler');
 const connectDb = require('./config/dbConnection');
+const Book= require('./models/books')
 
 //express app
 const app= express();
 
 connectDb();
+
+const port=process.env.PORT || 8080;
+app.listen(port, (err) => {
+  if (err) {
+      console.error(`Failed to start server: ${err.message}`);
+  } else {
+      console.log(`Server running on port ${port}`);
+  }
+});
 
 //register view engine
 app.set('view engine', 'ejs')
