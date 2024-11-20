@@ -1,21 +1,20 @@
-  const express= require('express');
-const { result } = require('lodash');
-const mongoose= require('mongoose');
-const bookRoutes= require('./Routes/book_routes')
+const express= require('express');
+ const dotenv= require("dotenv").config();
+// const { result } = require('lodash');
+const bookRoutes= require('./Routes/book_routes');
+const userRoutes= require('./Routes/user_routes');
+const errorHandler= require('./middleware/errorHandler');
+const connectDb = require('./config/dbConnection');
 
 //express app
 const app= express();
 
-//mongo
-const dbuRi= "mongodb+srv://Shaurya:Shaurya123@cluster0.3igor.mongodb.net/bookdetails?retryWrites=true&w=majority&appName=Cluster0";
-mongoose.connect(dbuRi)
-.then((result)=> app.listen(3000))
-.catch((err) => console.log(err));
+connectDb();
 
 //register view engine
 app.set('view engine', 'ejs')
 
-//middleware
+//middleware- alternsate express.json()
 app.use(express.urlencoded({ extended: true }));
 
 //mongo-text
@@ -51,6 +50,12 @@ app.get('/all-book', (req, res) => {
 
 // book routes
 app.use(bookRoutes);
+
+//user routes
+app.use(userRoutes);
+
+//error handling
+app.use(errorHandler);
 
 // 404
 
