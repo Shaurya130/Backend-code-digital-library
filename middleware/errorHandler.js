@@ -1,5 +1,5 @@
 const { constants }= require("../constants");
-const errorHandler =(err, req, res, next) =>{
+const errorHandler =(err, req, res, next) =>{  //next to fuurther process the program
     const statusCode= res.statusCode?res.statusCode:3000; 
 
     //a stack trace is a list of the method calls that the application was in the middle of when an Exception was thrown i.e in which file problem has occured

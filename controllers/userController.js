@@ -17,7 +17,7 @@ const registerUser= asyncHandler(async(req,res) =>{
     }
 
     //Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10); //10->salting
     const user= await User.create({
         username,
         email,
@@ -32,7 +32,6 @@ const registerUser= asyncHandler(async(req,res) =>{
         res.status(400);
         throw new Error("User data not valid")
     }
-    res.json({ message: "Register new user"});
 })
 
 //Json web tokens comprise of 3 parts =Header, Payload and Signature
@@ -46,7 +45,7 @@ const loginUser= asyncHandler(async(req,res) =>{
     const user= await User.findOne({email});
 
     //compare password with hashed password
-    if(user && (await bcrypt.compare(password, user.password))){
+    if(user && (await bcrypt.compare(password, user.password))){   //database password encrypted
         const accessToken= jwt.sign({
             user:{
                 username: user.username,

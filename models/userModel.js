@@ -2,11 +2,6 @@ const moongoose= require("mongoose");
 
 const userSchema= moongoose.Schema(
     {
-    user_id:{
-      type: moongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",  
-    },
     username:{
         type:String,
         required: [true, "Please add the user name"]

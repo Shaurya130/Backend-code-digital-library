@@ -10,7 +10,12 @@ const Book= require('./models/books')
 //express app
 const app= express();
 
-connectDb();
+try {
+  connectDb();
+} catch (err) {
+  console.error(`Database connection failed: ${err.message}`);
+  process.exit(1); // Exit the application
+}
 
 const port=process.env.PORT || 8080;
 app.listen(port, (err) => {
@@ -25,6 +30,7 @@ app.listen(port, (err) => {
 app.set('view engine', 'ejs')
 
 //middleware- alternsate express.json()
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //mongo-text

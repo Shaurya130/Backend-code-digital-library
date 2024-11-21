@@ -9,9 +9,9 @@ const asyncHandler= require("express-async-handler")
 //@route GET /
 const bookIndex = asyncHandler(async(req, res) => {
     const Boook=await Book.find({ user_id:req.user.id})
-    res.status(200).render('index', { books: result });
-    res.json(Boook);
+    res.status(200).render('index', { books: Boook });
 });
+
 
 const bookDetails = asyncHandler(async(req, res) => {
     const bookId = req.params.id; 
@@ -21,7 +21,6 @@ const bookDetails = asyncHandler(async(req, res) => {
         throw new Error("Contact not found");
     }
     res.status(200).json(boom);
-    res.render('details', { book: boom});
 });
 
 const bookDelete = asyncHandler(async(req, res) => {
@@ -37,8 +36,7 @@ const bookDelete = asyncHandler(async(req, res) => {
         throw new Error("User Dont have permission to delete other users books")
     }
     const bookDelete= await Book.findByIdAndDelete(bookId);
-    res.status(201).json({message:`Deleted book with id ${req.params.id}`})
-    res.redirect('/books');
+    res.status(201).json({"message":"Deleted book with id ${req.params.id}"})
 });
 
 const bookEdit = asyncHandler(async(req, res) => {
@@ -65,7 +63,6 @@ const bookEdit = asyncHandler(async(req, res) => {
     };
     const bookEdit= await Book.findByIdAndUpdate(bookId, updatedBook, { new: true });
     res.status(200).json(updatedBook);
-    res.redirect(`/books/${bookId}`);
 });
 
 
@@ -98,9 +95,7 @@ const bookCreate = asyncHandler(async(req, res) => {
       Fresh,
       user_id: req.user.id  
     })
-    res.staus(201).json({newBook})
-    res.redirect('/books');
-
+    res.status(201).json({newBook})
 });
 
 module.exports = {
