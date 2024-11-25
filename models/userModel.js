@@ -15,6 +15,7 @@ const userSchema= moongoose.Schema(
         type:String,
         required: [true, "Please add your user password"],
     },
+    isVerified: Boolean
 },
 {
     timestamps: true,

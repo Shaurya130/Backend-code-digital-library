@@ -6,12 +6,17 @@ const asyncHandler= require("express-async-handler")
 //now we dont need to write try catch block async handler would automatically send the error to the handler so wrap our request in asynchandler
 
 //@desc Get all Books
-//@route GET /
+//@route GET /books
+//access- public
+
 const bookIndex = asyncHandler(async(req, res) => {
     const Boook=await Book.find({ user_id:req.user.id})
     res.status(200).render('index', { books: Boook });
 });
 
+//@desc Fetch a certain book
+//@route GET /books/:id
+//@access public
 
 const bookDetails = asyncHandler(async(req, res) => {
     const bookId = req.params.id; 
@@ -22,6 +27,10 @@ const bookDetails = asyncHandler(async(req, res) => {
     }
     res.status(200).json(boom);
 });
+
+//@desc Delete a particular book
+//@route POST /books/:id/delete
+//@access private
 
 const bookDelete = asyncHandler(async(req, res) => {
     const bookId = req.params.id;
@@ -38,6 +47,10 @@ const bookDelete = asyncHandler(async(req, res) => {
     const bookDelete= await Book.findByIdAndDelete(bookId);
     res.status(201).json({"message":"Deleted book with id ${req.params.id}"})
 });
+
+//@desc Editng a BOOK
+//@route POST /books/:id/edit
+//@access private
 
 const bookEdit = asyncHandler(async(req, res) => {
     const bookId = req.params.id;
@@ -65,6 +78,9 @@ const bookEdit = asyncHandler(async(req, res) => {
     res.status(200).json(updatedBook);
 });
 
+//@desc Creating a book
+//@route POST /books/create
+//@access private
 
 const bookCreate = asyncHandler(async(req, res) => {
     console.log("The requested body is:",req.body);
