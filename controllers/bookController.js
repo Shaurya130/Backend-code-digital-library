@@ -40,7 +40,7 @@ const bookDelete = asyncHandler(async(req, res) => {
         throw new Error("Book not found")
     }
 
-    if(bookDt.user_id.toString() !== req.user.id){
+    if(bookDt.user_id.toString() !== req.user.id ){ //|| process.env.ADMIN_EMAIL== req.user.id){
         res.status(403);
         throw new Error("User Dont have permission to delete other users books")
     }
@@ -58,7 +58,7 @@ const bookEdit = asyncHandler(async(req, res) => {
     if(!bookCheck){
         res.status(404).render('err');
         throw new Error("Book not found")
-    }
+    } 
 
     if(bookCheck.user_id.toString() !== req.user.id){
         res.status(403);

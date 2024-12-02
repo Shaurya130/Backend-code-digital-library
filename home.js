@@ -5,7 +5,8 @@ const bookRoutes= require('./Routes/book_routes');
 const userRoutes= require('./Routes/user_routes');
 const errorHandler= require('./middleware/errorHandler');
 const connectDb = require('./config/dbConnection');
-const Book= require('./models/books')
+const Book= require('./models/books');
+const random= require('./Routes/random-routes');
 
 //express app
 const app= express();
@@ -55,6 +56,7 @@ app.get('/show',(req, res)=>{
     })
 });
 app.get('/all-book', (req, res) => {
+  // console.log("hi");
     Book.find()
       .then(result => {
         res.send(result);
@@ -65,13 +67,19 @@ app.get('/all-book', (req, res) => {
   });
 
 // book routes
-app.use(bookRoutes);
+app.use("/api/user",bookRoutes);
+
 
 //user routes
-app.use(userRoutes);
+app.use("/api/user",userRoutes);
+
+// console.log("hi");
 
 //error handling
 app.use(errorHandler);
+
+//test route
+
 
 // 404
 

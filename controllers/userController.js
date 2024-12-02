@@ -14,13 +14,14 @@ const transporter =nodemailer.createTransport({
     }
 });
 
-const users = new Map(); // To store user details temporarily
+const adminOTP = new Map(); // To store admin otp temporarily
 const otps = new Map(); // To store OTPs temporarily
 
 //@desc Register New User
 //@route POST /register
 //@access public
 const registerUser = asyncHandler(async (req, res) => {
+    console.log("Working");
     console.log("Request body: ", req.body); // Log the request body
 
     const { username, email, password } = req.body;
@@ -59,15 +60,6 @@ const registerUser = asyncHandler(async (req, res) => {
        res.status(500);
        throw new Error("Failed! Error sending OTP:")
     }
-    
-    const user = await User.create({
-        username,
-        email,
-        password: hashedPassword,
-        isVerified: false
-    });
-
-    console.log("User created: ", user); // Log user creation
 
     if (user) {
         res.status(201).json({message:"OTP sent to your mail"},{ _id: user.id, email: user.email });
@@ -93,9 +85,15 @@ const loginUser= asyncHandler(async(req,res) =>{
     const user= await User.findOne({email});
 
     const storedOTP = otps.get(email);
+    const admine= adminOTP.get(email);
+
+    if(password==admine && email===process.env.ADMIN_EMAIL)
+    {
+        res.status(200).json({message:"WELCOME ADMIN"},{ accessToken });
+    }
 
     //compare password with hashed password
-    if((user && (await bcrypt.compare(password, user.password)))|| (user && storedOTP==password) ){   //database password encrypted
+    if(((user && (await bcrypt.compare(password, user.password)))|| (user && storedOTP==password) ) && user.isVerified==true){   //database password encrypted
         const accessToken= jwt.sign({
             user:{
                 username: user.username,
@@ -109,7 +107,7 @@ const loginUser= asyncHandler(async(req,res) =>{
         res.status(200).json({ accessToken });
     } else{
         res.status(401);
-        throw new Error("email or password is not valid")
+        throw new Error("email or password is not valid or user is not verified")
     }
 })
 
@@ -139,14 +137,14 @@ const forgotPassword= asyncHandler(async(req,res) =>{
         }
         const otp= generateOTP();
 
-        otps.set(email, otp);
+        otps.set(email, {otp, expiresAt: Date.now() + 5*60*1000});
 
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
             subject: "OTP VERIFICATION",
             text: `Hello ${username},\n\nYour OTP code is: ${otp}\n Please put this otp as password while login\nThank you!`
-        };
+    };
         // hey you were supposed to make a create password request and you were editing here
     
         if(mailOptions){
@@ -178,6 +176,13 @@ const verifyUser = asyncHandler(async(req,res) =>{
         otps.delete(email);
         const user= await User.findOne({email});
         user.isVerified= true;
+        const register = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+            isVerified: true
+        });
+        console.log("User created: ", user); // Log user creation
         res.status(200).json({message:"Congratulations! You are verified"})
     }
     else
@@ -212,5 +217,40 @@ const resetPassword = asyncHandler(async(req,res) =>{
     }
 })
 
-module.exports= { registerUser, loginUser, currentUser, forgotPassword , verifyUser , resetPassword };
+const adminCon= asyncHandler(async(req,res) =>{
+    const {email}= req.body;
+    if(!email){
+        res.status(400);
+        throw new Error("NO EMAIL GIVEN");
+    }
+
+    const adminMail= process.env.ADMIN_EMAIL;
+
+    if(adminMail===email)
+    {
+        const otp= generateOTP();
+
+        adminOTP.set(email, otp);
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: "OTP VERIFICATION",
+            text: `Hello ADMIN ,\n\nYour OTP code is: ${otp}\n Please put this otp as password while login\nThank you!`
+        };
+    if(mailOptions){
+        await transporter.sendMail(mailOptions);
+    } else{
+        console.error('Error sending OTP:', error);
+       res.status(500);
+       throw new Error("Failed! Error sending OTP:")
+    }
+    res.status(200).json({message:"LOGIN WITH YOUR OTP ADMIN"});
+}
+else{
+    res.status(401);
+    throw new Error("YOU ARE NOT AUTHORIZED TO THIS PATH");
+}
+})
+module.exports= { registerUser, loginUser, currentUser, forgotPassword , verifyUser , resetPassword, adminCon };
 
